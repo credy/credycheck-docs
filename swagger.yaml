@@ -19,7 +19,7 @@ paths:
   /v1/start-session:
     post:
       tags:
-        - requester => us
+        - CredyCheck API
       description: |-
         # Start session 
         This method is used to get public keys from other partners in order to encrypt an envelope for each of them. It returns the public keys to the callback provided.
@@ -42,10 +42,125 @@ paths:
                   session_uuid:
                     type: string
                     example: b3345507-8298-4bd1-843a-6a968e593f00
+      callbacks:
+        session_started:
+          '{$request.body#/callback_uri}':
+            post:
+              description: ''
+              requestBody:
+                content:
+                  application/json:
+                    schema:
+                      properties:
+                        session_uuid:
+                          type: string
+                          example: b3345507-8298-4bd1-843a-6a968e593f00
+                        keys:
+                          type: array
+                          items: 
+                            type: object
+                            properties:
+                              key_uuid:
+                                type: string
+                                example: b3345507-8298-4bd1-843a-6a968e593f00
+                              public_key:
+                                type: string
+                                example: "key_binary_data_goes_here"
+              responses:
+                '202':
+                  description: ''
+  '/v1/{session_uuid}/get-customer-history':
+    post:
+      tags:
+        - CredyCheck API
+      description: ''
+      parameters:
+        - name: session_uuid
+          in: path
+          description: ''
+          required: true
+          schema:
+            format: string
+            example: b3345507-8298-4bd1-843a-6a968e593f00
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                callback_uri:
+                  type: string
+                  example: 'http://example.com/my_callback'
+                envelopes:                
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      key_uuid:
+                        type: string
+                        example: b3345507-8298-4bd1-843a-6a968e593f00
+                      envelope:
+                        type: string
+                        example: "encoded personal ID"
+      responses:
+        '202':
+          description: ''
+      callbacks:
+        history_collected:
+          '{$request.body#/callback_uri}':
+            post:
+              description: |
+                Aggregated loan history to Requester
+              requestBody:
+                content:
+                  application/json:
+                    schema:
+                      properties:
+                        session_uuid:
+                          type: string
+                          example: "b3345507-8298-4bd1-843a-6a968e593f00"
+                        total_applications_count_30days: 
+                          type: integer
+                          format: int32
+                          example: 22
+                        total_applications_count_5days: 
+                          type: integer
+                          format: int32
+                          example: 44
+                        total_last_submitted_application_date: 
+                          type: string
+                          example: "2082-07-30"
+                        total_count_of_active_loans: 
+                          type: integer
+                          format: int32
+                          example: 4
+                        total_count_of_loans_overdue_5_plus: 
+                          type: integer
+                          format: int32
+                          example: 7
+                        max_lender_applications_count_30days: 
+                          type: integer
+                          format: int32
+                          example: 5
+                        max_lender_applications_count_5days: 
+                          type: integer
+                          format: int32
+                          example: 3
+                        max_lender_count_of_active_loans: 
+                          type: integer
+                          format: int32
+                          example: 2
+                        max_lender_count_of_loans_overdue_5_plus: 
+                          type: integer
+                          format: int32
+                          example: 3
+              responses:
+                '204':
+                  description: ''      
+
   /v1/get-session-key:
     post:
       tags:
-        - us => responder
+        - Responder API
       description: ''
       requestBody:
         content:
@@ -61,10 +176,31 @@ paths:
       responses:
         '202':
           description: ''
-  '/v1/set-session-key/{session_uuid}':
+      callbacks:
+        session_key_created:
+          '{$request.body#/callback_uri}':
+            post:
+              tags:
+                - responder => us
+              description: ''
+              requestBody:
+                content:
+                  application/json:
+                    schema:
+                      properties:
+                        session_public_key:
+                          type: string
+                          example: key_binary_data_goes_here
+                        callback_uri:
+                          type: string
+                          example: 'http://example.com/my_callback'
+              responses:
+                '202':
+                  description: ''
+  '/v1/{session_uuid}/get-customer-data':
     post:
       tags:
-        - responder => us
+        - Responder API
       description: ''
       parameters:
         - name: session_uuid
@@ -79,181 +215,55 @@ paths:
           application/json:
             schema:
               properties:
-                session_public_key:
-                  type: string
-                  example: key_binary_data_goes_here
-                callback_uri:
-                  type: string
-                  example: 'http://example.com/my_internal_id_maybe/request_data'
-      responses:
-        '202':
-          description: ''
-  '/http://example.com/my_internal_id_maybe/get_keys':
-    post:
-      tags:
-        - us => requester
-      description: ''
-      requestBody:
-        content:
-          application/json:
-            schema:
-              properties:
-                session_uuid:
-                  type: string
-                  example: b3345507-8298-4bd1-843a-6a968e593f00
-                keys:
-                  type: array
-                  items: 
-                    type: object
-                    properties:
-                      key_uuid:
-                        type: string
-                        example: b3345507-8298-4bd1-843a-6a968e593f00
-                      public_key:
-                        type: string
-                        example: "key_binary_data_goes_here"
-      responses:
-        '202':
-          description: ''
-  '/http://api.credycheck.com/v1/<requester session UUID-4>/get_customer_history':
-    post:
-      tags:
-        - requester => us
-      description: ''
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                type: object
-                properties:
-                  key_uuid:
-                    type: string
-                    example: b3345507-8298-4bd1-843a-6a968e593f00
-                  envelope:
-                    type: string
-                    example: "encoded personal ID"
-      responses:
-        '202':
-          description: ''
-  '/http://example.com/my_internal_id_maybe/request_data':
-    post:
-      tags:
-        - us => responder
-      description: ''
-      requestBody:
-        content:
-          application/json:
-            schema:
-              properties:
                 envelope:
                   type: string
                   example: "encoded personal ID"
-                session_uuid: 
+                callback_uri:
                   type: string
-                  example: b3345507-8298-4bd1-843a-6a968e593f00
-                  description: "Responder session UUID-4"
-                callback_url: 
-                  type: string
-                  example: "http://api.credycheck.com/v1/recieve_response/<amazing session UUID-4>"
+                  example: 'http://example.com/my_callback'
       responses:
         '202':
-          description: ''        
-  '/http://api.credycheck.com/v1/recieve_response/<Responder session UUID-4>':
-    delete:
-      tags: 
-        - responder => us
-      description: When there's no data for the customer
-      responses:
-        '200':
-          description: ''
-    post:
-      tags:
-        - responder => us
-      description: |
-        When there's no data for a specific field, null or 0 should be specified as a value (based on field).
-        
-        When gdpr_consent is false, don't include any data.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              properties:
-                gdpr_consent:
-                  type: boolean
-                  example: true
-                applications_count_30days: 
-                  type: integer
-                  format: int32
-                  example: 2
-                applications_count_5days: 
-                  type: integer
-                  format: int32
-                  example: 1
-                last_submitted_application_date: 
-                  type: string
-                  example: "2020-02-01"
-                count_of_active_loans: 
-                  type: integer
-                  format: int32
-                  example: 1
-                count_of_loans_overdue_5_plus: 
-                  type: integer
-                  format: int32
-                  example: 0
-      responses:
-        '202':
-          description: ''           
-  '/http://example.com/my_internal_id_maybe/response_data':
-    post:
-      tags:
-        - us => requester
-      description: |
-        Aggregated loan history to Requester
-      requestBody:
-        content:
-          application/json:
-            schema:
-              properties:
-                session_uuid:
-                  type: string
-                  example: "b3345507-8298-4bd1-843a-6a968e593f00"
-                total_applications_count_30days: 
-                  type: integer
-                  format: int32
-                  example: 22
-                total_applications_count_5days: 
-                  type: integer
-                  format: int32
-                  example: 44
-                total_last_submitted_application_date: 
-                  type: string
-                  example: "2082-07-30"
-                total_count_of_active_loans: 
-                  type: integer
-                  format: int32
-                  example: 4
-                total_count_of_loans_overdue_5_plus: 
-                  type: integer
-                  format: int32
-                  example: 7
-                max_lender_applications_count_30days: 
-                  type: integer
-                  format: int32
-                  example: 5
-                max_lender_applications_count_5days: 
-                  type: integer
-                  format: int32
-                  example: 3
-                max_lender_count_of_active_loans: 
-                  type: integer
-                  format: int32
-                  example: 2
-                max_lender_count_of_loans_overdue_5_plus: 
-                  type: integer
-                  format: int32
-                  example: 3
-      responses:
-        '204':
-          description: ''      
+          description: '' 
+      callbacks:
+        data_ready:
+          '{$request.body#/callback_uri}':
+            delete:
+              description: When there's no data for the customer
+              responses:
+                '200':
+                  description: ''
+            post:
+              description: |
+                When there's no data for a specific field, null or 0 should be specified as a value (based on field).
+                
+                When gdpr_consent is false, don't include any data.
+              requestBody:
+                content:
+                  application/json:
+                    schema:
+                      properties:
+                        gdpr_consent:
+                          type: boolean
+                          example: true
+                        applications_count_30days: 
+                          type: integer
+                          format: int32
+                          example: 2
+                        applications_count_5days: 
+                          type: integer
+                          format: int32
+                          example: 1
+                        last_submitted_application_date: 
+                          type: string
+                          example: "2020-02-01"
+                        count_of_active_loans: 
+                          type: integer
+                          format: int32
+                          example: 1
+                        count_of_loans_overdue_5_plus: 
+                          type: integer
+                          format: int32
+                          example: 0
+              responses:
+                '202':
+                  description: ''           
