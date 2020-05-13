@@ -94,6 +94,11 @@ paths:
                 When there's no data for a specific field, null or 0 should be specified as a value (based on field).
                 
                 When gdpr_consent is false, don't include any data.
+                
+                Active loans is counted when the loan is at least 8+ eur (not counting interest)
+
+                Loan application count must include the number of full applications submitted (that means not to include the ones that are incomplete)
+
               requestBody:
                 content:
                   application/json:
@@ -123,10 +128,12 @@ components:
           type: integer
           format: int32
           example: 2
+          description: only full completed applications (not incomplete)
         applications_count_5days: 
           type: integer
           format: int32
           example: 1
+          description: only full completed applications (not incomplete)
         last_submitted_application_date: 
           type: string
           example: "2020-02-01"
@@ -134,10 +141,12 @@ components:
           type: integer
           format: int32
           example: 1
+          description: only the ones which debt is 8+ € (not including interest) must be included
         count_of_loans_overdue_5_plus: 
           type: integer
           format: int32
           example: 0
+          description: only the ones which debt is 8+ € (not including interest) must be included
   securitySchemes:
     oAuth2:
       type: oauth2
