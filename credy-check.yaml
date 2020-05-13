@@ -77,14 +77,7 @@ paths:
                 envelopes:                
                   type: array
                   items:
-                    type: object
-                    properties:
-                      key_uuid:
-                        type: string
-                        example: b3345507-8298-4bd1-843a-6a968e593f00
-                      envelope:
-                        type: string
-                        example: "encoded personal ID"
+                    $ref: '#/components/schemas/Envelope'
       responses:
         '202':
           description: ''
@@ -105,7 +98,22 @@ paths:
                   
 components:
   schemas:
+    Envelope:
+      type: object
+      required: 
+        - key
+        - envelope
+      properties:
+        key:
+          type: string
+          example: b3345507-8298-4bd1-843a-6a968e593f00
+          description: "Public key UUID"
+        envelope:
+          type: string
+          example: "encoded personal ID"
+          description: "Customer personal ID encrypted with public key"
     CustomerHistory:
+      type: object
       properties:
         total_applications_count_30days: 
           type: integer
