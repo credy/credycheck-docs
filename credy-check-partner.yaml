@@ -8,6 +8,8 @@ info:
     All requests that come to your api expect a callback back to credycheck (within 5 seconds).
     
     To see callback definitions, please check "Callbacks" tab inside the API method spec.
+    
+    The implementing partner must give us base url where their api will reside.
   
     # Glossary 
      * Requester - a partner who sends any kind of data query to us 
@@ -16,8 +18,17 @@ info:
      * Us - CredyCheck API 
     
     # Workflow
-    ![](https://github.com/alexeevdv/ccd/raw/master/round_1.png)
-    ![](https://github.com/alexeevdv/ccd/raw/master/round_2.png)
+    ![](https://github.com/credy/credycheck-docs/raw/master/round_1.png)
+    ![](https://github.com/credy/credycheck-docs/raw/master/round_2.png)
+    
+    # Authentication
+    You can choose which auth method you want to use.
+    
+    We support the following methods:
+    
+     * OAuth 2.0 using Client Credentials grant type (token url, client ID and client secret must be provided to us)
+     * Basic auth (username and password must be provided to us)
+     * Token auth (token and query param where we should send this token in must be provided to us)
 
   version: 3.0.0
 security: 
