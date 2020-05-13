@@ -11,7 +11,7 @@ info:
     
     # Authentication
     CredyCheck API uses OAuth 2.0 with Client Credentials grant type. 
-    Tokens can be obtained from /v1/token
+    Tokens can be obtained from /v1/token method.
 
     # Glossary 
      * Requester - a partner who sends any kind of data query to us 
