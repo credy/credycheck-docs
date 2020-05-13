@@ -9,10 +9,6 @@ info:
     
     To see callback definitions, please check "Callbacks" tab inside the API method spec.
     
-    # Authentication
-    CredyCheck API uses OAuth 2.0 with Client Credentials grant type. 
-    Tokens can be obtained from /v1/token method.
-
     # Glossary 
      * Requester - a partner who sends any kind of data query to us 
      * Responder - a partner from whom we query any kind of data 
@@ -22,6 +18,10 @@ info:
     # Workflow
     ![](https://github.com/credy/credycheck-docs/raw/master/round_1.png)
     ![](https://github.com/credy/credycheck-docs/raw/master/round_2.png)
+    
+    # Authentication
+    CredyCheck API uses OAuth 2.0 with Client Credentials grant type. 
+    Tokens can be obtained from /v1/token method.
      
   version: 3.0.0
 security: 
