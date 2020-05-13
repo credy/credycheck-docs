@@ -1,0 +1,128 @@
+openapi: 3.0.0
+info:
+  title: CredyCheck Partner API Documentation
+  description: |
+    # Glossary 
+     * Requester - a partner who sends any kind of data query to us 
+     * Responder - a partner from whom we query any kind of data 
+     * Envelope - encrypted container for personal ID 
+     * Us - CredyCheck API 
+  version: 3.0.0
+security: 
+  - oAuth2: []
+paths:
+  /v1/get-session-key:
+    post:
+      description: ''
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                session_uuid:
+                  type: string
+                  example: b3345507-8298-4bd1-843a-6a968e593f00
+                callback_uri:
+                  type: string
+                  example: 'http://api.credycheck.com/v1/recieve_key/<responder session UUID-4>'
+      responses:
+        '202':
+          description: ''
+      callbacks:
+        session_key_created:
+          '{$request.body#/callback_uri}':
+            post:
+              tags:
+                - responder => us
+              description: ''
+              requestBody:
+                content:
+                  application/json:
+                    schema:
+                      properties:
+                        session_public_key:
+                          type: string
+                          example: key_binary_data_goes_here
+                        callback_uri:
+                          type: string
+                          example: 'http://example.com/my_callback'
+              responses:
+                '202':
+                  description: ''
+  '/v1/{session_uuid}/get-customer-data':
+    post:
+      description: ''
+      parameters:
+        - name: session_uuid
+          in: path
+          description: ''
+          required: true
+          schema:
+            format: string
+            example: b3345507-8298-4bd1-843a-6a968e593f00
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                envelope:
+                  type: string
+                  example: "encoded personal ID"
+                callback_uri:
+                  type: string
+                  example: 'http://example.com/my_callback'
+      responses:
+        '202':
+          description: '' 
+      callbacks:
+        data_ready:
+          '{$request.body#/callback_uri}':
+            delete:
+              description: When there's no data for the customer
+              responses:
+                '200':
+                  description: ''
+            post:
+              description: |
+                When there's no data for a specific field, null or 0 should be specified as a value (based on field).
+                
+                When gdpr_consent is false, don't include any data.
+              requestBody:
+                content:
+                  application/json:
+                    schema:
+                      properties:
+                        gdpr_consent:
+                          type: boolean
+                          example: true
+                        applications_count_30days: 
+                          type: integer
+                          format: int32
+                          example: 2
+                        applications_count_5days: 
+                          type: integer
+                          format: int32
+                          example: 1
+                        last_submitted_application_date: 
+                          type: string
+                          example: "2020-02-01"
+                        count_of_active_loans: 
+                          type: integer
+                          format: int32
+                          example: 1
+                        count_of_loans_overdue_5_plus: 
+                          type: integer
+                          format: int32
+                          example: 0
+              responses:
+                '202':
+                  description: ''           
+components:
+  securitySchemes:
+    oAuth2:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: '/v1/token'
+          scopes: {}
+          
