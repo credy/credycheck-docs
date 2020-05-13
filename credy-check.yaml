@@ -20,8 +20,8 @@ info:
      * Us - CredyCheck API 
 
     # Workflow
-    ![](/round_1.png)
-    ![](/round_2.png)
+    ![](https://github.com/credy/credycheck-docs/raw/master/round_1.png)
+    ![](https://github.com/credy/credycheck-docs/raw/master/round_2.png)
      
   version: 3.0.0
 security: 
