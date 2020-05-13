@@ -2,6 +2,13 @@ openapi: 3.0.0
 info:
   title: CredyCheck API Documentation
   description: |
+  
+    This document describes methods that are available in CredyCheck API. 
+    
+    All requests will get responses by a callback that arrives later to your api (could take up to 30 seconds).
+    
+    To see callback definitions, please check "Callbacks" tab inside the API method spec.
+
     # Glossary 
      * Requester - a partner who sends any kind of data query to us 
      * Responder - a partner from whom we query any kind of data 
