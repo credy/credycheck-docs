@@ -25,10 +25,12 @@ paths:
         content:
           application/json:
             schema:
+              required:
+                - callback_uri
               properties:
                 callback_uri:
                   type: string
-                  example: 'http://example.com/my_internal_id_maybe/get_keys'
+                  example: 'http://example.com/my_callback'
       responses:
         '202':
           description: Session started
@@ -49,21 +51,7 @@ paths:
                 content:
                   application/json:
                     schema:
-                      properties:
-                        session_uuid:
-                          type: string
-                          example: b3345507-8298-4bd1-843a-6a968e593f00
-                        keys:
-                          type: array
-                          items: 
-                            type: object
-                            properties:
-                              key_uuid:
-                                type: string
-                                example: b3345507-8298-4bd1-843a-6a968e593f00
-                              public_key:
-                                type: string
-                                example: "key_binary_data_goes_here"
+                      $ref: '#/components/schemas/Session'
               responses:
                 '202':
                   description: ''
@@ -110,49 +98,77 @@ paths:
                 content:
                   application/json:
                     schema:
-                      properties:
-                        session_uuid:
-                          type: string
-                          example: "b3345507-8298-4bd1-843a-6a968e593f00"
-                        total_applications_count_30days: 
-                          type: integer
-                          format: int32
-                          example: 22
-                        total_applications_count_5days: 
-                          type: integer
-                          format: int32
-                          example: 44
-                        total_last_submitted_application_date: 
-                          type: string
-                          example: "2082-07-30"
-                        total_count_of_active_loans: 
-                          type: integer
-                          format: int32
-                          example: 4
-                        total_count_of_loans_overdue_5_plus: 
-                          type: integer
-                          format: int32
-                          example: 7
-                        max_lender_applications_count_30days: 
-                          type: integer
-                          format: int32
-                          example: 5
-                        max_lender_applications_count_5days: 
-                          type: integer
-                          format: int32
-                          example: 3
-                        max_lender_count_of_active_loans: 
-                          type: integer
-                          format: int32
-                          example: 2
-                        max_lender_count_of_loans_overdue_5_plus: 
-                          type: integer
-                          format: int32
-                          example: 3
+                      $ref: '#/components/schemas/CustomerHistory'
               responses:
                 '204':
-                  description: ''      
+                  description: ''
+                  
 components:
+  schemas:
+    CustomerHistory:
+      properties:
+        total_applications_count_30days: 
+          type: integer
+          format: int32
+          example: 22
+        total_applications_count_5days: 
+          type: integer
+          format: int32
+          example: 44
+        total_last_submitted_application_date: 
+          type: string
+          example: "2082-07-30"
+        total_count_of_active_loans: 
+          type: integer
+          format: int32
+          example: 4
+        total_count_of_loans_overdue_5_plus: 
+          type: integer
+          format: int32
+          example: 7
+        max_lender_applications_count_30days: 
+          type: integer
+          format: int32
+          example: 5
+        max_lender_applications_count_5days: 
+          type: integer
+          format: int32
+          example: 3
+        max_lender_count_of_active_loans: 
+          type: integer
+          format: int32
+          example: 2
+        max_lender_count_of_loans_overdue_5_plus: 
+          type: integer
+          format: int32
+          example: 3
+    SessionKey:
+      type: object
+      required:
+        - uuid
+        - key
+      properties:
+        uuid:
+          type: string
+          example: b3345507-8298-4bd1-843a-6a968e593f00
+        key:
+          type: string
+          example: "public_key_string_goes_here"
+    Session:
+      type: object
+      required:
+        - uuid
+        - keys
+      properties:
+        uuid:
+          type: string
+          example: b3345507-8298-4bd1-843a-6a968e593f00
+        keys:
+          type: array
+          items:
+            $ref: '#/components/schemas/SessionKey'
+
+
   securitySchemes:
     oAuth2:
       type: oauth2
