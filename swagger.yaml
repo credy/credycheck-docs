@@ -8,13 +8,9 @@ info:
      * Responder - a partner from whom we query any kind of data 
      * Envelope - encrypted container for personal ID 
      * Us - CredyCheck API 
-     
-    # Authorization
-    
-    CredyCheck uses OAuth 2.0 for authorization. 
-    
-    Grant type: Client Credentials
   version: 3.0.0
+security: 
+  - oAuth2: []
 paths:
   /v1/start-session:
     post:
@@ -267,3 +263,12 @@ paths:
               responses:
                 '202':
                   description: ''           
+components:
+  securitySchemes:
+    oAuth2:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: '/v1/token'
+          scopes: {}
+          
