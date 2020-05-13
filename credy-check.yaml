@@ -7,6 +7,10 @@ info:
      * Responder - a partner from whom we query any kind of data 
      * Envelope - encrypted container for personal ID 
      * Us - CredyCheck API 
+
+    # Workflow
+    ![](https://github.com/alexeevdv/ccd/raw/master/round_1.png)
+     
   version: 3.0.0
 security: 
   - oAuth2: []
