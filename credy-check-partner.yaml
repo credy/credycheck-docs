@@ -72,7 +72,7 @@ paths:
                   description: ''
   '{customer_data_callback_uri}':
     post:
-      description: 'A method that takes in an envelope and responds with info about the customer.'
+      description: 'A method that takes in an envelope and responds with info about the customer. The url is defined in the "session_key_created" callback (see POST /v1/get-session-key method).'
       requestBody:
         content:
           application/json:
