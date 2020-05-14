@@ -2,35 +2,35 @@ openapi: 3.0.0
 info:
   title: CredyCheck API Documentation
   description: |
-  
-    This document describes methods that are available in CredyCheck API. 
-    
+
+    This document describes methods that are available in CredyCheck API.
+
     All requests will get responses by a callback that arrives later to your api (could take up to 30 seconds).
-    
+
     To see callback definitions, please check "Callbacks" tab inside the API method spec.
-    
-    # Glossary 
-     * Requester - a partner who sends any kind of data query to us 
-     * Responder - a partner from whom we query any kind of data 
-     * Envelope - encrypted container for personal ID 
-     * Us - CredyCheck API 
+
+    # Glossary
+     * Requester - a partner who sends any kind of data query to us
+     * Responder - a partner from whom we query any kind of data
+     * Envelope - encrypted container for personal ID
+     * Us - CredyCheck API
 
     # Workflow
     ![](https://github.com/credy/credycheck-docs/raw/master/round_1.png)
     ![](https://github.com/credy/credycheck-docs/raw/master/round_2.png)
-    
+
     # Authentication
-    CredyCheck API uses OAuth 2.0 with Client Credentials grant type. 
+    CredyCheck API uses OAuth 2.0 with Client Credentials grant type.
     Tokens can be obtained from /v1/token method.
-     
+
   version: 3.0.0
-security: 
+security:
   - oAuth2: []
 paths:
   /v1/start-session:
     post:
       description: |-
-        # Start session 
+        # Start session
         This method is used to get public keys from other partners in order to encrypt an envelope for each of them. It returns the public keys to the callback provided.
       requestBody:
         content:
@@ -85,7 +85,7 @@ paths:
                 callback_uri:
                   type: string
                   example: 'http://example.com/my_callback'
-                envelopes:                
+                envelopes:
                   type: array
                   items:
                     $ref: '#/components/schemas/Envelope'
@@ -106,12 +106,12 @@ paths:
               responses:
                 '204':
                   description: ''
-                  
+
 components:
   schemas:
     Envelope:
       type: object
-      required: 
+      required:
         - key
         - envelope
       properties:
@@ -125,42 +125,69 @@ components:
           description: "Customer personal ID encrypted with public key"
     CustomerHistory:
       type: object
+      required:
+        - partner_provided_data_count
+        - partner_no_data_count
       properties:
-        total_applications_count_30days: 
+        total_applications_count_30days:
           type: integer
           format: int32
           example: 22
-        total_applications_count_5days: 
+          description: Shows how many applications in total partners have about customer in the last 30 days.
+        total_applications_count_5days:
           type: integer
           format: int32
           example: 44
-        total_last_submitted_application_date: 
+          description: Shows how many applications in total partners have about customer in the last 5  days.
+        total_last_submitted_application_date:
           type: string
           example: "2082-07-30"
-        total_count_of_active_loans: 
+          description: Shows customer last loan application date among partners.
+        total_count_of_active_loans:
           type: integer
           format: int32
           example: 4
-        total_count_of_loans_overdue_5_plus: 
+          description: Shows how many active loans in total partners have with customer.
+        total_count_of_loans_overdue_5_plus:
           type: integer
           format: int32
           example: 7
-        max_lender_applications_count_30days: 
+          description: Shows how many 5+ days overdue loans in total partners have with customer.
+        max_lender_applications_count_30days:
           type: integer
           format: int32
           example: 5
-        max_lender_applications_count_5days: 
+          description: Shows how many applications partner has about customer in the last 30 days. Maximum number among partners.
+        max_lender_applications_count_5days:
           type: integer
           format: int32
           example: 3
-        max_lender_count_of_active_loans: 
+          description: Shows how many applications partner has about customer in the last 5 days. Maximum number among partners.
+        max_lender_count_of_active_loans:
           type: integer
           format: int32
           example: 2
-        max_lender_count_of_loans_overdue_5_plus: 
+          description: Shows how many active loans partner has with customer. Maximum number among partners.
+        max_lender_count_of_loans_overdue_5_plus:
           type: integer
           format: int32
           example: 3
+          description: Shows how many 5+ days overdue loans partner has with customer. Maximum number among partners.
+        partner_provided_data_count:
+          type: integer
+          format: int32
+          example: 12
+          description: Shows how many partners responded successfully.
+        partner_provided_no_data_count:
+          type: integer
+          format: int32
+          example: 0
+          description: Shows how many partners didn't manage to give response within specified timeframe.
+        partner_no_customer_count:
+          type: integer
+          format: int32
+          example: 2
+          description: Shows how many partners have no info about the customer in their database.
     SessionKey:
       type: object
       required:
@@ -195,4 +222,4 @@ components:
         clientCredentials:
           tokenUrl: '/v1/token'
           scopes: {}
-          
+
