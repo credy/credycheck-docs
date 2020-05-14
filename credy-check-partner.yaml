@@ -15,7 +15,7 @@ info:
      * Requester - a partner who sends any kind of data query to us
      * Responder - a partner from whom we query any kind of data
      * Envelope - encrypted container for personal ID
-     * Us - CredyCheck API
+     * Us, we - CredyCheck API
 
     # Workflow
     ![](https://github.com/credy/credycheck-docs/raw/master/round_1.png)
@@ -44,7 +44,7 @@ security:
 paths:
   /v1/get-session-key:
     post:
-      description: 'Here you must generate a JWK with alg = RSA-OAEP-256. When the key is generated, we expect a callback from you (see "session_key_created" in Callbacks tab). The url path does not specifically have to be /v1/get-session-key, you can specify your own.'
+      description: 'Here you must generate a JWK with alg = RSA-OAEP-256. When the key is generated, we expect a callback from you (see "session_key_created" in Callbacks tab). The url path does not specifically have to be /v1/get-session-key, you can specify your own and send it to us.'
       requestBody:
         content:
           application/json:
