@@ -50,6 +50,10 @@ paths:
           application/json:
             schema:
               properties:
+                session_uuid:
+                  type: string
+                  example: 15ed4dc6-6158-4419-b035-4c4d844d3cca
+                  description: UUID4 for the session. Same UUID4 will be sent to POST {customer_data_callback_uri} later.
                 callback_uri:
                   type: string
                   example: 'http://api.credycheck.com/v1/recieve_key/<responder session UUID-4>'
@@ -81,6 +85,10 @@ paths:
                 - envelope
                 - callback_uri
               properties:
+                session_uuid:
+                  type: string
+                  example: 15ed4dc6-6158-4419-b035-4c4d844d3cca
+                  description: UUID4 for the session.
                 envelope:
                   type: string
                   example: eyJhbGciOiJSU0EtT0FFUC0yNTYiLCJlbmMiOiJBMjU2Q0JDLUhTNTEyIiwiemlwIjoiREVGIn0.zaAWoRog2iR4oG24leaqFypwQmMV9TS1AqHNWYLgFm-Wf_gViB0Hyu6w2N3tRIrjzn98cvdqFMJCpqS8MWpSNdLKvMLDlVAVCdRwFwK-H-kEP3iRLMVfG6eHk8EHSKlDHevYzHNajecSvg4wYW5Wcm7nv_mn1CqHh7_7jsxnLmUKOV-lUhH3vtUGbyhnsJY3rZEsa2VIppVd2LFVcqZzuH6c_r0vsf1Yn_46YC286D6eboEaToUdnH8T2EMsBMzpFq7NQ1wfr-_LG-r8v989l5ZbXv_ASg0bKoPvn2PF-5o9g0q-XzJ7G3qCICsZH55nBxI2EO9w6J7YxKfPUmiiRnVDB6Tuz9ZqHS2cN8rrGQDXaOjpF6J4Sh78rRTdCZ5zHUAvr8IHwmgujwsBq8aQe17m1_b0qdTO3oAs-ssIjwhk-JXAnInkD92CqmX9CiB44MAFJwAznEaB1kSUY5ZNSlhIB_xqykAi9pxBPTWGvo-Jt-l4liapbQfZpEcMpcPN-2DQ_mBZ3aK9l3aXr_SAeFPv3SwS1vuvZT_92USGg98zJ6lu0UUN9jT7MoKqDquofzWsvC4rK3HKsKrSWUU5jJh5Dq6IiDQSMXzDXKRjKHUYkn7dvuO88Q_FvcoENPJLJXrIJlHrY_26tTx-BTwSgMDBbpymn_OyLOJPYRn3moQ.yCmnuyLQzNl91LP9iLmNGA.sGtQ2h7r0Pe79ri3CRHd_QIb_U7DjFlH5dBHgWzzcfA.CtB47h2A-LEHWYOLrpmIplcK-wbkSaMdiAn17s0gh-c
