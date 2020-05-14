@@ -2,36 +2,36 @@ openapi: 3.0.0
 info:
   title: CredyCheck Partner API Documentation
   description: |
-  
-    This document describes methods that you must implement as CredyCheck partner. 
-    
+
+    This document describes methods that you must implement as CredyCheck partner.
+
     All requests that come to your api expect a callback back to credycheck (within 5 seconds).
-    
+
     To see callback definitions, please check "Callbacks" tab inside the API method spec.
-    
+
     The implementing partner must give us base url where their api will reside.
-  
-    # Glossary 
-     * Requester - a partner who sends any kind of data query to us 
-     * Responder - a partner from whom we query any kind of data 
-     * Envelope - encrypted container for personal ID 
-     * Us - CredyCheck API 
-    
+
+    # Glossary
+     * Requester - a partner who sends any kind of data query to us
+     * Responder - a partner from whom we query any kind of data
+     * Envelope - encrypted container for personal ID
+     * Us - CredyCheck API
+
     # Workflow
     ![](https://github.com/credy/credycheck-docs/raw/master/round_1.png)
     ![](https://github.com/credy/credycheck-docs/raw/master/round_2.png)
-    
+
     # Authentication
     You can choose which auth method you want to use.
-    
+
     We support the following methods:
-    
+
      * OAuth 2.0 using Client Credentials grant type (token url, client ID and client secret must be provided to us)
      * Basic auth (username and password must be provided to us)
      * Token auth (token and query param where we should send this token in must be provided to us)
 
   version: 3.0.0
-security: 
+security:
   - oAuth2: []
 paths:
   /v1/get-session-key:
@@ -60,7 +60,7 @@ paths:
                 content:
                   application/json:
                     schema:
-                      $ref: '#/components/schemas/SessionKey' 
+                      $ref: '#/components/schemas/SessionKey'
               responses:
                 '202':
                   description: ''
@@ -79,7 +79,7 @@ paths:
         content:
           application/json:
             schema:
-              required: 
+              required:
                 - envelope
                 - callback_uri
               properties:
@@ -91,7 +91,7 @@ paths:
                   example: 'http://example.com/my_callback'
       responses:
         '202':
-          description: '' 
+          description: ''
       callbacks:
         data_ready:
           '{$request.body#/callback_uri}':
@@ -102,13 +102,7 @@ paths:
                   description: ''
             post:
               description: |
-                When there's no data for a specific field, null or 0 should be specified as a value (based on field).
-                
-                When gdpr_consent is false, don't include any data.
-                
-                Active loans is counted when the loan is at least 8+ eur (not counting interest)
-
-                Loan application count must include the number of full applications submitted (that means not to include the ones that are incomplete)
+                When there's no data for a specific field, null or 0 should be specified as a value (based on field spec).
 
               requestBody:
                 content:
@@ -117,12 +111,12 @@ paths:
                       $ref: '#/components/schemas/CustomerData'
               responses:
                 '202':
-                  description: ''           
+                  description: ''
 components:
   schemas:
     SessionKey:
       type: object
-      required: 
+      required:
         - key
       properties:
         key:
@@ -135,29 +129,31 @@ components:
         gdpr_consent:
           type: boolean
           example: true
-        applications_count_30days: 
+          description: Assurance that GDPR consent to share data has been asked from customer, value should be TRUE. If it hasn't, field value should be FALSE and data will not be processed and passed to requesting party.
+        applications_count_30days:
           type: integer
           format: int32
           example: 2
-          description: only full completed applications (not incomplete)
-        applications_count_5days: 
+          description: How many loan applications customer has made in the last 30 days. Must include only full completed/submitted loan applications (not partial/incomplete). If product is credit line, only new loan applications/contracts must be included, not applications within already approved/active credit line.
+        applications_count_5days:
           type: integer
           format: int32
           example: 1
-          description: only full completed applications (not incomplete)
-        last_submitted_application_date: 
+          description: How many loan applications customer has made in the last 5 days. Must include only full completed/submitted loan applications (not partial/incomplete). If product is credit line, only new loan applications/contracts must be included, not applications within already approved/active credit line.
+        last_submitted_application_date:
           type: string
           example: "2020-02-01"
-        count_of_active_loans: 
+          description: What was the last loan application date when customer completed/submitted loan application.
+        count_of_active_loans:
           type: integer
           format: int32
           example: 1
-          description: only the ones which debt is 8+ € (not including interest) must be included
-        count_of_loans_overdue_5_plus: 
+          description: How many active loans customer has.
+        count_of_loans_overdue_5_plus:
           type: integer
           format: int32
           example: 0
-          description: only the ones which debt is 8+ € (not including interest) must be included
+          description: How many 5+ days overdue loans customer has. Only the ones which principal debt is 8+ € (NOT including interest and other fees) must be included.
   securitySchemes:
     oAuth2:
       type: oauth2
@@ -165,4 +161,4 @@ components:
         clientCredentials:
           tokenUrl: '/v1/token'
           scopes: {}
-          
+
