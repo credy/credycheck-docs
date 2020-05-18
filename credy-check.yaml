@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: CredyCheck API Documentation
+  title: CredyCheck Requester API Documentation
   description: |
 
     This document describes methods that are available in CredyCheck API.
