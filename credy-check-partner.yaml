@@ -7,7 +7,7 @@ info:
 
     All requests that come to your api expect a callback back to credycheck (within 5 seconds).
 
-    To see callback definitions, please check "Callbacks" tab inside the API method spec.
+    To see callback definitions, <span style="color:red">please check "Callbacks" tab inside the API method spec</span>.
 
     The implementing partner must give us base url where their api will reside.
 
